@@ -1,0 +1,26 @@
+# Ignore local model weights and caches
+**/llms/**
+**/*llm*/**
+
+# Ignore Node.js dependencies
+node_modules/
+**/node_modules/
+
+# Ignore text and markdown files
+*.txt
+*.md
+*.docx
+
+
+# Ignore Python cache and environment files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env
+.env*
+
+# Ignore editor/project settings
+.vscode/
+.idea/
+.DS_Store
