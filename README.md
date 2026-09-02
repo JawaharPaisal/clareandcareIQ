@@ -1,142 +1,402 @@
-# Clare & CareIQ
+# Clare & CareIQ 🏥🤖
 
-AI-powered healthcare assistant for medical report analysis, personalized health guidance, and patient support.
+**AI-Powered Multimodal Healthcare Assistant for Medical Document Understanding**
 
-## Overview
+Clare & CareIQ is a full-stack AI healthcare assistant designed to help users interact with medical information through **document analysis, medical question answering, OCR, and multimodal AI**.
 
-This repository contains a full-stack healthcare application with:
-- React + Vite frontend for interactive health dashboards, AI chat, report upload, and profile management
-- Flask backend API for authentication, chat, medical history, reports, and AI integrations
-- MongoDB data storage for users, sessions, reports, and medical history
-- Local and cloud AI model support for medical NLP and question answering
+The system combines **Gemini AI, medical language models, vision-language models, and Biomedical Named Entity Recognition** into a hybrid AI pipeline for processing medical reports and images.
 
-## Key Features
+> **Core idea:** Transform unstructured medical documents and images into structured, understandable information using a combination of specialized AI models rather than relying on a single model.
 
-- Authentication and session management
-- Healthcare chatbot assistant
-- Medical report upload and analysis
-- Patient profile and health analytics
-- Secure backend API with JWT, rate limiting, and consent handling
-- Local LLM support for offline AI inference
+---
 
-## Repository Structure
+## 🧠 AI Architecture
 
-- `frontend/` — React app, Vite configuration, Tailwind styling
-- `server/` — Flask backend, API blueprints, local model directories, middleware
-- `server/requirements.txt` — Python dependencies for backend and AI support
-- `frontend/package.json` — frontend dependencies and npm scripts
+Clare & CareIQ uses a **hybrid multi-model architecture** where different AI components handle different aspects of medical information processing.
 
-## Prerequisites
+```text
+                 Medical Report
+                /              \
+               /                \
+        PDF / Text              Image
+             │                    │
+             ▼                    ▼
+      Document Processing        OCR
+             │                    │
+             └─────────┬──────────┘
+                       ▼
+              Medical Information
+                       │
+          ┌────────────┼────────────┐
+          ▼            ▼            ▼
+       Gemini       MedAlpaca    Qwen2-VL
+          │            │            │
+          │         LLaVA-Med       │
+          └────────────┼────────────┘
+                       ▼
+             Biomedical NER
+                       │
+                       ▼
+             Structured Insights
+                       │
+                       ▼
+              Healthcare Assistant
+```
 
-- Node.js 16+ and npm
-- Python 3.11+ (compatible with backend dependencies)
-- MongoDB instance or Docker container
+The architecture supports **model specialization and fallback workflows**, allowing the application to use different models for different types of medical inputs and processing requirements.
 
-## Setup
+---
 
-### Backend
+## 🤖 AI / ML Components
 
-1. Change to the server folder:
-   ```bash
-   cd server
-   ```
-2. Create and activate a Python virtual environment:
-   ```bash
-   python -m venv venv
-   .\venv\Scripts\activate
-   ```
-3. Install backend dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Create environment variables from example:
-   ```bash
-   copy env.example .env
-   ```
-5. Start MongoDB locally or with Docker:
-   ```bash
-   docker run -d -p 27017:27017 --name mongodb mongo:latest
-   ```
-6. Run the Flask API:
-   ```bash
-   python app.py
-   ```
+### 1. Generative AI
 
-### Frontend
+**Gemini AI** is integrated into the application for generative AI-powered healthcare interactions and medical information processing.
 
-1. Change to the frontend folder:
-   ```bash
-   cd frontend
-   ```
-2. Install frontend dependencies:
-   ```bash
-   npm install
-   ```
-3. Run the development server:
-   ```bash
-   npm run dev
-   ```
-4. Open the app in your browser at `http://localhost:3000`
+### 2. Medical Language Models
 
-## Important Notes
+The system incorporates medical-domain models including:
 
-- The repository includes large local model directories, such as `server/llava-med-v1.5-mistral-7b/` and `server/Qwen2-VL-7B-Instruct/`.
-- A root `.gitignore` file has been added to exclude:
-  - `node_modules/`
-  - `**/llms/**` and local model weight folders
-  - `*.txt` and `*.md`
-  - Python cache files and common editor directories
+* **MedAlpaca**
+* **LLaVA-Med**
 
-## Running the App
+These models provide medical-focused language and multimodal capabilities.
 
-- Frontend: `cd frontend && npm run dev`
-- Backend: `cd server && python app.py`
-- The backend defaults to `http://localhost:5000`
-- The frontend defaults to `http://localhost:3000` or the Vite port assigned by config
+### 3. Vision-Language Models
 
-## Deployment
+For image-based medical information processing, the application supports:
 
-For production deployment, build the frontend and serve it using a static host or integrate it with the Flask backend.
+* **Qwen2-VL**
+* **LLaVA-Med**
 
-### Frontend production build
+This enables the system to work with visual medical information rather than relying exclusively on plain text.
+
+### 4. Biomedical Named Entity Recognition
+
+A **Biomedical NER** pipeline is used to identify relevant medical entities from extracted report information.
+
+Examples of information that can be represented as entities include:
+
+```text
+Medical condition
+Medication
+Symptom
+Test / Investigation
+Body part
+Clinical terminology
+```
+
+### 5. OCR & Document Understanding
+
+Medical reports can contain both machine-readable text and image-based information.
+
+The processing pipeline therefore combines:
+
+```text
+PDF / Image
+     ↓
+OCR / Text Extraction
+     ↓
+Medical Content Processing
+     ↓
+Entity Extraction
+     ↓
+AI Interpretation
+```
+
+---
+
+## 🔄 Multi-Model Fallback Architecture
+
+One of the key design decisions in Clare & CareIQ is the use of a **multi-model fallback strategy**.
+
+Instead of depending entirely on one AI model:
+
+```text
+                  User Input
+                      │
+                      ▼
+              Input Classification
+                      │
+          ┌───────────┴───────────┐
+          ▼                       ▼
+      Text Input              Image Input
+          │                       │
+          ▼                       ▼
+      AI Model              Vision Model
+          │                       │
+          └───────────┬───────────┘
+                      ▼
+               Result Validation
+                      │
+                 Failure?
+                 /      \
+               Yes       No
+                │         │
+                ▼         ▼
+          Fallback Model  Result
+                │
+                ▼
+             Result
+```
+
+This architecture is intended to improve reliability when a particular model is unavailable, unsuitable for an input type, or unable to produce the expected result.
+
+---
+
+## ✨ Key Features
+
+### 📄 Medical Report Analysis
+
+Upload medical reports and process their contents using document processing, OCR, NLP and generative AI.
+
+### 🖼️ Medical Image Understanding
+
+Process image-based medical information using multimodal vision-language models.
+
+### 💬 AI Healthcare Assistant
+
+Interact with the application through an AI-powered conversational interface for healthcare-related information.
+
+### 🧬 Biomedical Entity Extraction
+
+Extract medically relevant entities from processed content using Biomedical NER.
+
+### 🔀 Hybrid AI Pipeline
+
+Combines multiple AI approaches instead of depending on a single model:
+
+* Generative AI
+* Medical LLMs
+* Vision-language models
+* NLP
+* OCR
+* Named Entity Recognition
+
+### 🔐 Privacy & Security
+
+The application includes security mechanisms such as:
+
+* JWT authentication
+* Encrypted record storage
+* Rate limiting
+* Consent handling
+* Secure backend APIs
+
+---
+
+## 🏗️ System Architecture
+
+```text
+┌─────────────────────────────────────────────┐
+│              React + Vite UI                │
+│                                             │
+│  Dashboard │ AI Chat │ Reports │ Profile   │
+└──────────────────────┬──────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────┐
+│              Flask Backend                  │
+│                                             │
+│ Authentication │ Reports │ Chat │ History  │
+└──────────────┬──────────────────────────────┘
+               │
+       ┌───────┴────────┐
+       ▼                ▼
+┌──────────────┐  ┌─────────────────────────┐
+│   MongoDB    │  │      AI Pipeline        │
+│              │  │                         │
+│ Users        │  │ Gemini                  │
+│ Sessions     │  │ MedAlpaca               │
+│ Reports      │  │ Qwen2-VL                │
+│ Medical Data │  │ LLaVA-Med              │
+└──────────────┘  │ Biomedical NER          │
+                  │ OCR / Document Analysis │
+                  └─────────────────────────┘
+```
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer               | Technologies                                |
+| ------------------- | ------------------------------------------- |
+| Frontend            | React, Vite, Tailwind CSS                   |
+| Backend             | Python, Flask                               |
+| Database            | MongoDB                                     |
+| Generative AI       | Gemini AI                                   |
+| Medical LLMs        | MedAlpaca, LLaVA-Med                        |
+| Vision-Language AI  | Qwen2-VL, LLaVA-Med                         |
+| NLP                 | Biomedical NER                              |
+| Document Processing | PDF / OCR                                   |
+| Authentication      | JWT                                         |
+| Security            | Rate Limiting, Encryption, Consent Handling |
+
+---
+
+## 📁 Repository Structure
+
+```text
+Clare-CareIQ/
+│
+├── frontend/                  # React + Vite application
+│
+├── server/                    # Flask backend
+│   ├── app.py
+│   ├── API blueprints
+│   ├── middleware
+│   └── AI / model integration
+│
+├── server/requirements.txt    # Python dependencies
+├── frontend/package.json      # Frontend dependencies
+└── README.md
+```
+
+---
+
+## ⚙️ Getting Started
+
+### Prerequisites
+
+* Node.js 16+
+* npm
+* Python 3.11+
+* MongoDB
+* Docker (optional)
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/JawaharPaisal/Clare-CareIQ.git
+cd Clare-CareIQ
+```
+
+### 2. Configure the Backend
+
+```bash
+cd server
+
+python -m venv venv
+```
+
+Activate the environment.
+
+**Windows:**
+
+```powershell
+.\venv\Scripts\activate
+```
+
+**Linux / macOS:**
+
+```bash
+source venv/bin/activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Create your environment file:
+
+```bash
+copy env.example .env
+```
+
+Configure the required environment variables.
+
+### 3. Start MongoDB
+
+Using Docker:
+
+```bash
+docker run -d -p 27017:27017 --name mongodb mongo:latest
+```
+
+Or use an existing MongoDB instance.
+
+### 4. Start the Flask Backend
+
+```bash
+python app.py
+```
+
+Backend:
+
+```text
+http://localhost:5000
+```
+
+### 5. Start the Frontend
+
+Open another terminal:
 
 ```bash
 cd frontend
-npm run build
-``` 
+npm install
+npm run dev
+```
 
-### Backend production
+The frontend will run on the Vite development port configured by the project.
 
-- Use a production WSGI server such as Gunicorn or uWSGI
-- Configure environment variables securely
-- Secure MongoDB access and enable HTTPS in the production environment
+---
 
-## Useful Commands
+## 🔒 Security & Privacy
 
-### Frontend
-- `npm install`
-- `npm run dev`
-- `npm run build`
-- `npm run preview`
+Healthcare applications require careful handling of user information.
 
-### Backend
-- `pip install -r requirements.txt`
-- `python app.py`
+Clare & CareIQ incorporates:
 
-## Contributing
+* JWT-based authentication
+* Encrypted record storage
+* Consent handling
+* Rate limiting
+* Protected backend APIs
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Open a pull request
+> **Disclaimer:** Clare & CareIQ is an experimental software project for AI-assisted healthcare information processing. It is not intended to replace qualified medical professionals, diagnosis, or clinical decision-making.
 
-## Screenshots
-<img width="1917" height="1021" alt="Screenshot 2025-09-11 131559" src="https://github.com/user-attachments/assets/d1953dd5-aef0-4c90-8ce9-03deb87ab159" />
+---
 
-<img width="996" height="700" alt="Screenshot 2025-09-11 133119" src="https://github.com/user-attachments/assets/9d3f0515-fccd-4e34-a177-e84d19b51c0e" />
+## 📸 Screenshots
 
-<img width="1919" height="1059" alt="Screenshot 2025-09-11 134154" src="https://github.com/user-attachments/assets/16a66ed1-807f-4a54-a472-2c5e38f41ed0" />
+### Healthcare Dashboard
 
-<img width="1195" height="908" alt="Screenshot 2025-10-29 120204" src="https://github.com/user-attachments/assets/d7c05314-7a9f-42fd-a4f9-c26478784dee" />
+<img width="1917" height="1021" alt="Clare & CareIQ dashboard" src="https://github.com/user-attachments/assets/d1953dd5-aef0-4c90-8ce9-03deb87ab159" />
 
-Thanking You ...
+### AI Healthcare Assistant
+
+<img width="996" height="700" alt="Clare & CareIQ AI assistant" src="https://github.com/user-attachments/assets/9d3f0515-fccd-4e90-a177-e84d19b51c0e" />
+
+### Medical Report Processing
+
+<img width="1919" height="1059" alt="Clare & CareIQ medical report processing" src="https://github.com/user-attachments/assets/16a66ed1-807f-4a54-a472-2c5e38f41ed0" />
+
+### Healthcare Analytics
+
+<img width="1195" height="908" alt="Clare & CareIQ analytics" src="https://github.com/user-attachments/assets/d7c05314-7a9f-42fd-a4f9-c26478784dee" />
+
+---
+
+## 🔮 Future Directions
+
+Potential directions for extending the project include:
+
+* Improved medical document extraction
+* More robust multimodal model routing
+* Additional medical-domain models
+* Evaluation benchmarks for model responses
+* Improved model selection and fallback policies
+* Retrieval-augmented generation for medical knowledge
+* More comprehensive evaluation of AI-generated insights
+
+---
+
+## 👨‍💻 Project
+
+**Clare & CareIQ**
+
+A full-stack experiment in combining **Generative AI, multimodal AI, medical NLP, computer vision, and secure application engineering** for healthcare information processing.
+
+Built with **Python + Flask + React + MongoDB + Gemini + Medical AI Models**.
